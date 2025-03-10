@@ -47,9 +47,9 @@
             lblDisplay.AutoSize = true;
             lblDisplay.Location = new Point(12, 38);
             lblDisplay.Name = "lblDisplay";
-            lblDisplay.Size = new Size(38, 15);
+            lblDisplay.Size = new Size(38, 30);
             lblDisplay.TabIndex = 1;
-            lblDisplay.Text = "label1";
+            lblDisplay.Text = "label1\r\ntaco";
             // 
             // ChartApp
             // 
