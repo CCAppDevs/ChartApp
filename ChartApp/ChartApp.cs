@@ -9,9 +9,33 @@ namespace ChartApp
         private string _rawFile = "";
         private List<WeatherEvent> _events = new List<WeatherEvent>();
 
+        // graphics objects
+        private SolidBrush blackBrush;
+        private Pen blackPen;
+        private Graphics g;
+
+        // graph positioning values
+        private int startX = 150;
+        private int startY = 10;
+        private int sizeX = 300;
+        private int sizeY = 300;
+
+        private Point topLeft;
+        private Point topRight;
+        private Point bottomRight;
+        private Point bottomLeft;
+
         public ChartApp()
         {
             InitializeComponent();
+            blackBrush = new SolidBrush(Color.Black);
+            blackPen = new Pen(blackBrush);
+            g = this.CreateGraphics();
+
+            topLeft = new Point(startX, startY);
+            topRight = new Point(startX + sizeX, startY);
+            bottomRight = new Point(startX + sizeX, startY + sizeY);
+            bottomLeft = new Point(startX, startY + sizeY);
         }
 
         private void LoadData()
@@ -24,33 +48,51 @@ namespace ChartApp
             }
         }
 
+        private void DrawData()
+        {
+            // for each weather event in our list of weather events
+                // Draw a circle at the day/temp
+
+            foreach (WeatherEvent evt in _events)
+            {
+                //MessageBox.Show("X: " + evt.id + ", Y: " + evt.temp);
+
+                int x = evt.id;
+                int y = evt.temp;
+
+                float posXStart = startX + (5 * x);
+                float width = 5;
+                float posYStart = startY + (5 * y);
+                float height = 5;
+
+                g.DrawEllipse(blackPen, posXStart, posYStart, width, height);
+            }
+        }
+
         private void DrawGraph()
         {
-            // horizontal - ID - 1 to N
-            // vertical - Temp - 50 to 150
-            // TODO: add dynamic ranges to the app
-            SolidBrush blackBrush = new SolidBrush(Color.Black);
-            Pen blackPen = new Pen(blackBrush);
-            Graphics g = this.CreateGraphics();
-
-            int startX = 150;
-            int startY = 10;
-            int sizeX = 300;
-            int sizeY = 300;
-
-            Point topLeft = new Point(startX, startY);
-            Point topRight = new Point(startX + sizeX, startY);
-            Point bottomRight = new Point(startX + sizeX, startY + sizeY);
-            Point bottomLeft = new Point(startX, startY + sizeY);
-
-
             // Draw Graph Boundries
             g.DrawLine(blackPen, topLeft, bottomLeft);
             g.DrawLine(blackPen, bottomLeft, bottomRight);
 
 
             // Draw x hashes
-            int xStep = 10;
+            int numHashesX = 14;
+            int xStep = sizeX / numHashesX;
+
+            // draw vertical hash marks
+            for (int i = 0; i < numHashesX; i++)
+            {
+                Point pt1 = new Point(startX + (xStep * (i + 1)), startY + sizeY + 10);
+                Point pt2 = new Point(startX + (xStep * (i + 1)), startY + sizeY);
+
+                Point textPt = new Point(startX + (xStep * (i + 1)), startY + sizeY + 40);
+
+                string label = (i + 1).ToString();
+
+                g.DrawLine(blackPen, pt1, pt2);
+                g.DrawString(label, new Font(FontFamily.GenericMonospace, 8.0f), blackBrush, textPt);
+            }
 
 
 
@@ -105,6 +147,7 @@ namespace ChartApp
         private void ChartApp_Paint(object sender, PaintEventArgs e)
         {
             DrawGraph();
+            DrawData();
         }
     }
 }
