@@ -25,6 +25,12 @@ namespace ChartApp
         private Point bottomRight;
         private Point bottomLeft;
 
+        private int numHashesX = 14;
+        private int xStep;
+
+        private int numHashesY = 10;
+        private int yStep;
+
         public ChartApp()
         {
             InitializeComponent();
@@ -36,6 +42,9 @@ namespace ChartApp
             topRight = new Point(startX + sizeX, startY);
             bottomRight = new Point(startX + sizeX, startY + sizeY);
             bottomLeft = new Point(startX, startY + sizeY);
+            
+            xStep = sizeX / numHashesX;
+            yStep = (sizeY - startY) / numHashesY;
         }
 
         private void LoadData()
@@ -51,7 +60,9 @@ namespace ChartApp
         private void DrawData()
         {
             // for each weather event in our list of weather events
-                // Draw a circle at the day/temp
+            // Draw a circle at the day/temp
+
+            g.DrawEllipse(blackPen, startX, startY + sizeY, 5, 5);
 
             foreach (WeatherEvent evt in _events)
             {
@@ -60,9 +71,12 @@ namespace ChartApp
                 int x = evt.id;
                 int y = evt.temp;
 
-                float posXStart = startX + (5 * x);
+                float posXStart = startX + (xStep * x);
                 float width = 5;
-                float posYStart = startY + (5 * y);
+
+
+                float posYStart = sizeY - ((y - 50) * 3);
+                // 2.9 f per pixel
                 float height = 5;
 
                 g.DrawEllipse(blackPen, posXStart, posYStart, width, height);
@@ -77,8 +91,7 @@ namespace ChartApp
 
 
             // Draw x hashes
-            int numHashesX = 14;
-            int xStep = sizeX / numHashesX;
+
 
             // draw vertical hash marks
             for (int i = 0; i < numHashesX; i++)
@@ -97,9 +110,6 @@ namespace ChartApp
 
 
             // Draw y hashes
-            int numHashesY = 10;
-            int yStep = (sizeY - startY) / numHashesY;
-
             int tempStep = (150 - 50) / numHashesY;
 
             // draw vertical hash marks
